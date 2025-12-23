@@ -5,7 +5,7 @@ import { defineConfig } from 'astro/config';
 
 export default defineConfig({
   site: 'https://wicayonima-reborn.github.io',
-  base: '/BlogLow',
+  base: '/Blog',
   integrations: [
     mdx(),
     sitemap(),
