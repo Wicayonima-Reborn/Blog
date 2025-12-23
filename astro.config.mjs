@@ -4,10 +4,10 @@ import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://Wicayonima-Reborn.github.io',
+  site: 'https://wicayonima-reborn.github.io',
+  base: '/BlogLow',
   integrations: [
     mdx(),
     sitemap(),
   ],
-  base: "/BlogLow",
 });
