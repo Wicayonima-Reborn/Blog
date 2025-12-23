@@ -1,21 +1,41 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
 import { getCollection } from "astro:content";
+import { isPublished } from "../lib/posts";
 
-const posts = await getCollection("blog");
+const posts = (await getCollection("blog"))
+  .filter(isPublished)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, 3);
 ---
 
-<BaseLayout title="Low-Level Notes">
-  <h1>Low-Level Notes</h1>
-  <p>Catatan belajar systems & low-level programming.</p>
+<BaseLayout title="Programming Notes">
+  <Header />
 
-  <ul>
-    {posts.map((post: { slug: any; data: { title: unknown; }; }) => (
-      <li>
-        <a href={`/blog/${post.slug}`}>
-          {post.data.title}
-        </a>
-      </li>
-    ))}
-  </ul>
+  <main>
+    <h1>Programming Notes</h1>
+
+    <p>
+      Catatan seputar programming.  
+      Kadang teknis, kadang opini, kadang hasil debugging.
+    </p>
+
+    <h2>Latest posts</h2>
+
+    <ul>
+      {posts.map((post) => (
+        <li>
+          <a href={`/blog/${post.id}/`}>
+            {post.data.title}
+          </a>
+          <small> — {post.data.pubDate.toDateString()}</small>
+        </li>
+      ))}
+    </ul>
+
+    <p>
+      <a href="/blog/">Lihat semua artikel →</a>
+    </p>
+  </main>
 </BaseLayout>
