@@ -4,38 +4,63 @@ import Header from "../components/Header.astro";
 import { getCollection } from "astro:content";
 import { isPublished } from "../lib/posts";
 
-const posts = (await getCollection("blog"))
+// Mengambil dan memproses data posts
+const allPosts = await getCollection("blog");
+const posts = allPosts
   .filter(isPublished)
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
   .slice(0, 3);
 ---
 
-<BaseLayout title="Programming Notes">
+<BaseLayout title="Programming Notes | My Blog">
   <Header />
 
-  <main>
-    <h1>Programming Notes</h1>
+  <main class="max-w-3xl mx-auto px-6 py-12">
+    <section class="mb-16">
+      <h1 class="text-4xl font-bold tracking-tight text-slate-900 mb-4">
+        Programming Notes
+      </h1>
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Catatan seputar programming. Kadang teknis, kadang opini, 
+        atau sekadar hasil <code class="bg-slate-100 px-1 rounded text-sm font-mono">debugging</code> tengah malam.
+      </p>
+    </section>
 
-    <p>
-      Catatan seputar programming.  
-      Kadang teknis, kadang opini, kadang hasil debugging.
-    </p>
+    <section>
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-2xl font-semibold text-slate-800">Latest Posts</h2>
+        <a href="/blog/" class="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
+          Lihat semua artikel →
+        </a>
+      </div>
 
-    <h2>Latest posts</h2>
-
-    <ul>
-      {posts.map((post) => (
-        <li>
-          <a href={`/blog/${post.id}/`}>
-            {post.data.title}
-          </a>
-          <small> — {post.data.pubDate.toDateString()}</small>
-        </li>
-      ))}
-    </ul>
-
-    <p>
-      <a href="/blog/">Lihat semua artikel →</a>
-    </p>
+      <div class="space-y-8">
+        {posts.map((post) => (
+          <article class="group relative flex flex-col items-start">
+            <h3 class="text-xl font-bold mb-2 group-hover:text-blue-600 transition-colors">
+              <a href={`/blog/${post.id}/`}>
+                <span class="absolute -inset-y-2.5 -inset-x-4 z-0 scale-95 bg-slate-50 opacity-0 transition group-hover:scale-100 group-hover:opacity-100 sm:-inset-x-6 sm:rounded-2xl"></span>
+                <span class="relative z-10">{post.data.title}</span>
+              </a>
+            </h3>
+            <time class="relative z-10 order-first mb-3 flex items-center text-sm text-slate-400 pl-3.5" datetime={post.data.pubDate.toISOString()}>
+              <span class="absolute inset-y-0 left-0 flex items-center" aria-hidden="true">
+                <span class="h-4 w-0.5 rounded-full bg-slate-200"></span>
+              </span>
+              {post.data.pubDate.toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </time>
+            {post.data.description && (
+              <p class="relative z-10 text-sm text-slate-600 line-clamp-2">
+                {post.data.description}
+              </p>
+            )}
+          </article>
+        ))}
+      </div>
+    </section>
   </main>
 </BaseLayout>
